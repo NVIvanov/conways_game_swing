@@ -1,10 +1,11 @@
 package ru.nivanov.conway;
 
 class Cell {
-    private int x, y;
+    private final int x;
+    private final int y;
     private boolean alive = false;
     private boolean nextStatus;
-    static final int SIZE = 3;
+    static final int SIZE = 7;
 
 
     Cell(int x, int y){
@@ -14,9 +15,9 @@ class Cell {
 
     void nextState(CellMap parent){
         int aroundAlive = countAround(parent);
-        if (alive){
+        if (alive) {
             nextStatus = !(aroundAlive < 2 || aroundAlive > 3);
-        }else {
+        } else {
             nextStatus = aroundAlive == 3;
         }
     }
@@ -27,22 +28,30 @@ class Cell {
 
     private int countAround(CellMap parent){
         int aliveAround = 0;
-        if (parent.alive(x - 1, y - 1))
+        if (parent.alive(x - 1, y - 1)) {
             aliveAround++;
-        if (parent.alive(x, y - 1))
+        }
+        if (parent.alive(x, y - 1)) {
             aliveAround++;
-        if (parent.alive(x + 1, y - 1))
+        }
+        if (parent.alive(x + 1, y - 1)) {
             aliveAround++;
-        if (parent.alive(x - 1, y))
+        }
+        if (parent.alive(x - 1, y)) {
             aliveAround++;
-        if (parent.alive(x + 1, y))
+        }
+        if (parent.alive(x + 1, y)) {
             aliveAround++;
-        if (parent.alive(x - 1, y + 1))
+        }
+        if (parent.alive(x - 1, y + 1)) {
             aliveAround++;
-        if (parent.alive(x + 1, y + 1))
+        }
+        if (parent.alive(x + 1, y + 1)) {
             aliveAround++;
-        if (parent.alive(x, y + 1))
+        }
+        if (parent.alive(x, y + 1)) {
             aliveAround++;
+        }
         return aliveAround;
     }
 

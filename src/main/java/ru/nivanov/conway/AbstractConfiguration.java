@@ -8,8 +8,7 @@ abstract class AbstractConfiguration implements Configuration{
         Cell[] cells = getActiveCells();
         for (Cell cell: cells){
             Optional<Cell> cellOnMap = cellMap.getCell(x + cell.getX(), y + cell.getY());
-            if (cellOnMap.isPresent())
-                cellOnMap.get().handOfGod();
+            cellOnMap.ifPresent(Cell::handOfGod);
         }
     }
 

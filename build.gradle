@@ -1,4 +1,6 @@
-apply plugin: 'java'
+plugins {
+    id 'java'
+}
 
 sourceSets {
     main {
@@ -8,13 +10,14 @@ sourceSets {
     }
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
+tasks.register('sourcesJar', Jar) {
+    dependsOn classes
+    archiveClassifier.set('sources')
     from sourceSets.main.allSource
 }
 
-jar{
-    manifest{
-        attributes 'Main-Class': 'ru.nivanov.conway.StartWindow'
+jar {
+    manifest {
+        attributes('Main-Class': 'ru.nivanov.conway.StartWindow')
     }
 }

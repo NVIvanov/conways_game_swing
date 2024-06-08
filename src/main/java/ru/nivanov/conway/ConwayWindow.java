@@ -1,17 +1,23 @@
 package ru.nivanov.conway;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 class ConwayWindow extends JFrame {
     private final CellMap map;
     private final JPanel drawPanel = new DrawPanel();
     private final int size;
-    private LifeCycle lifeCycle = new LifeCycle(200);
+    private final LifeCycle lifeCycle = new LifeCycle(200);
     private JComboBox<String> comboBox;
 
     ConwayWindow(int size){
@@ -56,12 +62,15 @@ class ConwayWindow extends JFrame {
     }
 
     private void addPauseButton(){
-        JButton jButton = new JButton("Пауза");
+        JButton jButton = new JButton("Pause");
         jButton.addActionListener(e -> {
-            if (lifeCycle.paused())
+            if (lifeCycle.paused()) {
                 lifeCycle.resume();
-            else
+                jButton.setText("Pause");
+            } else {
                 lifeCycle.pause();
+                jButton.setText("Resume");
+            }
         });
         getContentPane().add(jButton, BorderLayout.SOUTH);
     }
@@ -69,7 +78,7 @@ class ConwayWindow extends JFrame {
     private void addSpinner(){
         JSpinner spinner = new JSpinner(new SpinnerNumberModel(500, 1, 1000, 50));
         getContentPane().add(spinner, BorderLayout.EAST);
-        spinner.addChangeListener(e -> lifeCycle.setDelay(Integer.valueOf(String.valueOf(spinner.getValue()))));
+        spinner.addChangeListener(e -> lifeCycle.setDelay(Integer.parseInt(String.valueOf(spinner.getValue()))));
     }
 
     private void addComboBox(){
@@ -91,36 +100,36 @@ class ConwayWindow extends JFrame {
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, getWidth(), getHeight());
             g.setColor(Color.WHITE);
-            for (int i = 0; i < size; i++)
-                for (int j = 0; j < size; j++)
-                    if (map.alive(i, j))
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    if (map.alive(i, j)) {
                         g.fillRect(i * Cell.SIZE, j * Cell.SIZE, Cell.SIZE, Cell.SIZE);
+                    }
+                }
+            }
         }
     }
 
-    private class LifeCycle implements Runnable{
+    private class LifeCycle {
         private volatile int delay;
         private volatile boolean stop, sleep;
+        private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        private ScheduledFuture<?> task;
 
         LifeCycle(int delay){
             this.delay = delay;
         }
 
         void start(){
-            new Thread(this).start();
-        }
-
-        @Override
-        public void run() {
-            while (!stop){
-                try {
-                    Thread.sleep(delay);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            task = scheduler.scheduleAtFixedRate(() -> {
+                if (!stop) {
+                    if (!sleep) {
+                        map.nextState();
+                    }
+                } else {
+                    scheduler.shutdown();
                 }
-                if (!sleep)
-                    map.nextState();
-            }
+            }, 0, delay, TimeUnit.MILLISECONDS);
         }
 
         void stop(){
@@ -129,6 +138,15 @@ class ConwayWindow extends JFrame {
 
         void setDelay(int delay){
             this.delay = delay;
+            restartScheduler();
+        }
+
+        private synchronized void restartScheduler() {
+            if (!scheduler.isShutdown()) {
+                scheduler.shutdown();
+            }
+            scheduler = Executors.newScheduledThreadPool(1);
+            start();
         }
 
         void pause() {

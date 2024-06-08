@@ -3,23 +3,23 @@ package ru.nivanov.conway;
 import javax.swing.*;
 
 public class StartWindow extends JFrame{
-    private JTextField fieldSize = new JTextField();
-    private JButton ok = new JButton("Начать");
+    private final JTextField fieldSize = new JTextField();
+    private final JButton ok = new JButton("Start");
 
     private StartWindow(){
         addContent();
         ok.addActionListener(e -> {
-            new ConwayWindow(Integer.valueOf(fieldSize.getText())).setVisible(true);
+            new ConwayWindow(Integer.parseInt(fieldSize.getText())).setVisible(true);
             StartWindow.this.setVisible(false);
         });
     }
 
     private void addContent(){
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Старт");
+        setTitle("Start");
 
         JLabel sizeLabel = new JLabel();
-        sizeLabel.setText("Размер поля");
+        sizeLabel.setText("Field size");
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
