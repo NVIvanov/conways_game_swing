@@ -31,3 +31,6 @@ Conway's Game of Life is a cellular automaton devised by the British mathematici
 
 ## License
 This project is licensed under the MIT License.
+
+## Acknowledgements
+This project is dedicated to the memory of John Horton Conway (1937-2020), the brilliant mathematician who created the Game of Life. His work has inspired countless enthusiasts and professionals in mathematics, computer science, and beyond. Conway's Game of Life remains a profound example of how simple rules can lead to complex and beautiful patterns, embodying the essence of mathematical discovery and exploration.
