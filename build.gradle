@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 sourceSets {
@@ -20,4 +21,8 @@ jar {
     manifest {
         attributes('Main-Class': 'ru.nivanov.conway.StartWindow')
     }
+}
+
+application {
+    mainClass = 'ru.nivanov.conway.StartWindow'
 }

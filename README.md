@@ -20,7 +20,8 @@ Conway's Game of Life is a cellular automaton devised by the British mathematici
 - Adjustable simulation speed.
 
 ## How to run
-TBD
+- Clone the project
+- Run it with gradle `./gradlew run`
 
 ## Usage
 - Open the application.
